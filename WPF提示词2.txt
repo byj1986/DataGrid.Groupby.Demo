@@ -1,0 +1,5 @@
+当前的版本能正常工作。当前的根节点只显示为一个Expander和根节点绑定的名字，但我希望以树形结构显示根节点。
+例如，我想使截图中的数据显示为
+    - Audi  BasePrice为所有Class的BasePrice总和，Insurance、Tax、TotalPrice也是子节点同字段的总和
+        - Bus BasePrice为Bus类型的BasePrice总和，Insurance、Tax、TotalPrice也是子节点同字段的总和
+    
