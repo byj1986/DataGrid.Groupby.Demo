@@ -1,0 +1,5 @@
+- DataGrid.Groupby.Demo提示词
+        - WPF程序加载cars.json
+            - 使用DataGrid显示数据
+                - 需要使用UI虚拟化以避免加载数据过多导致UI卡顿
+                - 需要按照Producer、汽车类型分组

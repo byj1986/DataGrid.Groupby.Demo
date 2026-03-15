@@ -1,0 +1,18 @@
+- DataGrid.Groupby.Demo数据提示词
+    - 数据模型为Car车
+        - 主要字段
+            - Producer 汽车生产商，有BYD，Geely，Chery，Toyota, Honda，BMW，Benz，Audi
+            - Class 汽车类型 分为 Sedan, SUV, Truck, Bus
+            - Usage 用途 分为家用，商用
+            - Model 型号 string
+            - EnergyType 分为 Gasoline, PHEV, EREV, EV
+            - LaunchDate 上市时间 DateTime
+            - BasePrice 裸车价格 double
+            - Insurance 保险价格 double
+            - Tax 税 double
+            - TotalPrice 总价 double
+        - 构建数据，写入cars.json
+            - 每个厂商构建1000条数据
+            - TotalPrice为BasePrice + Insurance + Tax
+            - 根据上面的描述，自行生成Enum
+            - 除Producer外，均随机生成

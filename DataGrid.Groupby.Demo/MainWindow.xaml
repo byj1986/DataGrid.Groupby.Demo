@@ -1,0 +1,139 @@
+<Window x:Class="DataGrid.Groupby.Demo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="DataGrid GroupBy Demo"
+        Width="1280"
+        Height="720"
+        MinWidth="960"
+        MinHeight="540">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </Window.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="12" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="12" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0"
+                Padding="16"
+                Background="#F5F7FA"
+                BorderBrush="#D7DCE2"
+                BorderThickness="1"
+                CornerRadius="8">
+            <DockPanel LastChildFill="True">
+                <StackPanel>
+                    <TextBlock FontSize="22"
+                               FontWeight="SemiBold"
+                               Text="车辆数据分组展示" />
+                    <TextBlock Margin="0,6,0,0"
+                               Foreground="#5F6B7A"
+                               Text="数据来源：cars.json，按 Producer 和 Class 两级分组，启用 DataGrid 虚拟化。" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <DataGrid Grid.Row="2"
+                  ItemsSource="{Binding CarsView}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  HeadersVisibility="Column"
+                  RowHeaderWidth="0"
+                  SelectionMode="Extended"
+                  SelectionUnit="FullRow"
+                  GridLinesVisibility="Horizontal"
+                  AlternatingRowBackground="#F9FBFD"
+                  EnableRowVirtualization="True"
+                  EnableColumnVirtualization="True"
+                  ScrollViewer.CanContentScroll="True"
+                  ScrollViewer.IsDeferredScrollingEnabled="True"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling">
+            <DataGrid.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="{x:Type GroupItem}">
+                            <Setter Property="Margin" Value="0,0,0,8" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type GroupItem}">
+                                        <Expander IsExpanded="True"
+                                                  Background="#FFFFFF"
+                                                  BorderBrush="#D7DCE2"
+                                                  BorderThickness="1">
+                                            <Expander.Header>
+                                                <DockPanel Margin="8,6">
+                                                    <TextBlock FontWeight="SemiBold"
+                                                               Text="{Binding Name}" />
+                                                    <TextBlock Margin="8,0,0,0"
+                                                               Foreground="#5F6B7A"
+                                                               Text="{Binding ItemCount, StringFormat={}({0:N0})}" />
+                                                </DockPanel>
+                                            </Expander.Header>
+                                            <ItemsPresenter />
+                                        </Expander>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
+                </GroupStyle>
+            </DataGrid.GroupStyle>
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="120"
+                                    Binding="{Binding Producer}"
+                                    Header="Producer" />
+                <DataGridTextColumn Width="100"
+                                    Binding="{Binding CarClass}"
+                                    Header="Class" />
+                <DataGridTextColumn Width="100"
+                                    Binding="{Binding Usage}"
+                                    Header="Usage" />
+                <DataGridTextColumn Width="180"
+                                    Binding="{Binding Model}"
+                                    Header="Model" />
+                <DataGridTextColumn Width="100"
+                                    Binding="{Binding EnergyType}"
+                                    Header="EnergyType" />
+                <DataGridTextColumn Width="120"
+                                    Binding="{Binding LaunchDate, StringFormat={}{0:yyyy-MM-dd}}"
+                                    Header="LaunchDate" />
+                <DataGridTextColumn Width="120"
+                                    Binding="{Binding BasePrice, StringFormat={}{0:N2}}"
+                                    Header="BasePrice" />
+                <DataGridTextColumn Width="120"
+                                    Binding="{Binding Insurance, StringFormat={}{0:N2}}"
+                                    Header="Insurance" />
+                <DataGridTextColumn Width="120"
+                                    Binding="{Binding Tax, StringFormat={}{0:N2}}"
+                                    Header="Tax" />
+                <DataGridTextColumn Width="140"
+                                    Binding="{Binding TotalPrice, StringFormat={}{0:N2}}"
+                                    Header="TotalPrice" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <DockPanel Grid.Row="4">
+            <TextBlock VerticalAlignment="Center"
+                       Foreground="#5F6B7A"
+                       Text="{Binding StatusText}" />
+            <ProgressBar Width="180"
+                         Height="12"
+                         Margin="12,0,0,0"
+                         VerticalAlignment="Center"
+                         IsIndeterminate="True"
+                         Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        </DockPanel>
+    </Grid>
+</Window>
