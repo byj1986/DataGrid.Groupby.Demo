@@ -14,4 +14,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="DevExpress.Wpf.Grid" Version="25.2.5" />
+  </ItemGroup>
+
 </Project>

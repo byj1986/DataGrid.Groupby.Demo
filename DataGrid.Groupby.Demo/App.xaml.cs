@@ -1,12 +1,8 @@
-﻿using System.Windows;
+using Application = System.Windows.Application;
 
 namespace DataGrid.Groupby.Demo
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
     }
-
 }

@@ -1,10 +1,9 @@
 using DataGrid.Groupby.Demo.Models;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
-using System.Windows.Data;
+using System.ComponentModel;
 
 namespace DataGrid.Groupby.Demo.ViewModels;
 
@@ -16,26 +15,12 @@ public sealed class MainViewModel : INotifyPropertyChanged
     };
 
     private ObservableCollection<Car> _cars = [];
-    private ICollectionView? _carsView;
     private bool _isLoading;
     private string _statusText = "准备加载车辆数据...";
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public ICollectionView? CarsView
-    {
-        get => _carsView;
-        private set
-        {
-            if (_carsView == value)
-            {
-                return;
-            }
-
-            _carsView = value;
-            OnPropertyChanged();
-        }
-    }
+    public ObservableCollection<Car> Cars => _cars;
 
     public bool IsLoading
     {
@@ -89,37 +74,21 @@ public sealed class MainViewModel : INotifyPropertyChanged
             });
 
             _cars = new ObservableCollection<Car>(cars);
+            OnPropertyChanged(nameof(Cars));
             OnPropertyChanged(nameof(TotalCount));
-            BuildCarsView();
             StatusText = $"已加载 {TotalCount:N0} 条车辆数据，按厂商和车型分组显示。";
         }
         catch (Exception ex)
         {
             _cars = [];
+            OnPropertyChanged(nameof(Cars));
             OnPropertyChanged(nameof(TotalCount));
-            CarsView = null;
             StatusText = $"加载失败：{ex.Message}";
         }
         finally
         {
             IsLoading = false;
         }
-    }
-
-    private void BuildCarsView()
-    {
-        var view = CollectionViewSource.GetDefaultView(_cars);
-        view.GroupDescriptions.Clear();
-        view.SortDescriptions.Clear();
-
-        view.SortDescriptions.Add(new SortDescription(nameof(Car.Producer), ListSortDirection.Ascending));
-        view.SortDescriptions.Add(new SortDescription(nameof(Car.CarClass), ListSortDirection.Ascending));
-        view.SortDescriptions.Add(new SortDescription(nameof(Car.Model), ListSortDirection.Ascending));
-
-        view.GroupDescriptions.Add(new PropertyGroupDescription(nameof(Car.Producer)));
-        view.GroupDescriptions.Add(new PropertyGroupDescription(nameof(Car.CarClass)));
-
-        CarsView = view;
     }
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
