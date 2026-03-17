@@ -2,10 +2,9 @@
     x:Class="DataGrid.Groupby.Demo.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:converters="clr-namespace:DataGrid.Groupby.Demo.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="DataGrid GroupBy Demo"
+    Title="DataGrid Demo"
     Width="1280"
     Height="720"
     MinWidth="960"
@@ -13,21 +12,6 @@
     mc:Ignorable="d">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <converters:GroupSumConverter x:Key="GroupSumConverter" />
-
-        <!-- Shared GroupItem ControlTemplate: groups start collapsed -->
-        <ControlTemplate x:Key="CollapsedGroupItemTemplate" TargetType="{x:Type GroupItem}">
-            <Expander IsExpanded="False">
-                <Expander.Header>
-                    <ContentPresenter Content="{Binding}" ContentTemplate="{TemplateBinding ContentTemplate}" />
-                </Expander.Header>
-                <ItemsPresenter />
-            </Expander>
-        </ControlTemplate>
-
-        <Style x:Key="CollapsedGroupItemStyle" TargetType="{x:Type GroupItem}">
-            <Setter Property="Template" Value="{StaticResource CollapsedGroupItemTemplate}" />
-        </Style>
     </Window.Resources>
 
     <Grid Margin="16">
@@ -51,11 +35,11 @@
                     <TextBlock
                         FontSize="22"
                         FontWeight="SemiBold"
-                        Text="车辆数据分组展示" />
+                        Text="车辆数据展示" />
                     <TextBlock
                         Margin="0,6,0,0"
                         Foreground="#5F6B7A"
-                        Text="数据来源：cars.json，按 Producer 和 Class 两级分组，使用 WPF 内置 DataGrid。" />
+                        Text="数据来源：cars.json，使用 WPF 内置 DataGrid。" />
                 </StackPanel>
             </DockPanel>
         </Border>
@@ -66,86 +50,16 @@
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
                 CanUserDeleteRows="False"
-                CanUserResizeColumns="False"
-                CanUserSortColumns="False"
-                FrozenColumnCount="2"
+                CanUserResizeColumns="True"
+                CanUserSortColumns="True"
+                EnableColumnVirtualization="True"
+                EnableRowVirtualization="True"
                 IsReadOnly="True"
                 ItemsSource="{Binding Cars}"
-                MouseDoubleClick="GridControl_MouseDoubleClick">
-
-                <DataGrid.GroupStyle>
-                    <!-- Level 1: Producer — show group name only -->
-                    <GroupStyle ContainerStyle="{StaticResource CollapsedGroupItemStyle}">
-                        <GroupStyle.HeaderTemplate>
-                            <DataTemplate>
-                                <Border
-                                    Padding="4,4"
-                                    Background="#DDE3EC">
-                                    <TextBlock
-                                        FontSize="13"
-                                        FontWeight="Bold"
-                                        Foreground="#1F2937"
-                                        Text="{Binding Name}" />
-                                </Border>
-                            </DataTemplate>
-                        </GroupStyle.HeaderTemplate>
-                    </GroupStyle>
-
-                    <!-- Level 2: CarClass — show group name + column-aligned sums -->
-                    <GroupStyle ContainerStyle="{StaticResource CollapsedGroupItemStyle}">
-                        <GroupStyle.HeaderTemplate>
-                            <DataTemplate>
-                                <Border
-                                    Padding="4,3"
-                                    Background="#EEF0F5">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="120" />
-                                            <ColumnDefinition Width="120" />
-                                            <ColumnDefinition Width="120" />
-                                            <ColumnDefinition Width="140" />
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock
-                                            Grid.Column="0"
-                                            FontWeight="SemiBold"
-                                            Foreground="#374151"
-                                            Text="{Binding Name}"
-                                            VerticalAlignment="Center" />
-                                        <TextBlock
-                                            Grid.Column="1"
-                                            Margin="0,0,4,0"
-                                            Foreground="#374151"
-                                            Text="{Binding Items, Converter={StaticResource GroupSumConverter}, ConverterParameter=BasePrice}"
-                                            TextAlignment="Right"
-                                            VerticalAlignment="Center" />
-                                        <TextBlock
-                                            Grid.Column="2"
-                                            Margin="0,0,4,0"
-                                            Foreground="#374151"
-                                            Text="{Binding Items, Converter={StaticResource GroupSumConverter}, ConverterParameter=Insurance}"
-                                            TextAlignment="Right"
-                                            VerticalAlignment="Center" />
-                                        <TextBlock
-                                            Grid.Column="3"
-                                            Margin="0,0,4,0"
-                                            Foreground="#374151"
-                                            Text="{Binding Items, Converter={StaticResource GroupSumConverter}, ConverterParameter=Tax}"
-                                            TextAlignment="Right"
-                                            VerticalAlignment="Center" />
-                                        <TextBlock
-                                            Grid.Column="4"
-                                            Margin="0,0,4,0"
-                                            Foreground="#374151"
-                                            Text="{Binding Items, Converter={StaticResource GroupSumConverter}, ConverterParameter=TotalPrice}"
-                                            TextAlignment="Right"
-                                            VerticalAlignment="Center" />
-                                    </Grid>
-                                </Border>
-                            </DataTemplate>
-                        </GroupStyle.HeaderTemplate>
-                    </GroupStyle>
-                </DataGrid.GroupStyle>
+                MouseDoubleClick="GridControl_MouseDoubleClick"
+                VirtualizingPanel.IsVirtualizing="True"
+                VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                VirtualizingPanel.VirtualizationMode="Recycling">
 
                 <DataGrid.Columns>
                     <DataGridTextColumn
