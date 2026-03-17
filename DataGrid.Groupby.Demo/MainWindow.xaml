@@ -58,7 +58,7 @@
             EnableSmartColumnsGeneration="False"
             ItemsSource="{Binding Cars}"
             MouseDoubleClick="GridControl_MouseDoubleClick"
-            ShowLoadingPanel="True">
+            ShowLoadingPanel="{Binding Path=IsLoading}">
             <dxg:GridControl.GroupSummary>
                 <dxg:GridSummaryItem
                     DisplayFormat="{}{0:C2}"
@@ -151,7 +151,7 @@
                     AllowGrouping="False"
                     AllowHorizontalScrollingVirtualization="True"
                     AllowSorting="False"
-                    AutoWidth="False"
+                    AutoWidth="True"
                     GroupSummaryDisplayMode="AlignByColumns"
                     ShowFilterPanelMode="Never"
                     ShowGridMenu="TableView_ShowGridMenu"

@@ -30,15 +30,8 @@ public partial class MainWindow : Window
         // Cars 已设置到 ItemsSource，等待 DataBind(8) + Render(7) 全部完成后（ContextIdle=3 最低）再操作
         await Dispatcher.InvokeAsync(() =>
         {
-            CarGridControl.ShowLoadingPanel = false;
             CarGridControl.CollapseAllGroups();
         }, DispatcherPriority.ContextIdle);
-    }
-
-    private void GridControl_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
-    {
-        // Disable all right-click interactions inside the grid (menus, etc.).
-        e.Handled = true;
     }
 
     private void TableView_ShowGridMenu(object sender, DevExpress.Xpf.Grid.GridMenuEventArgs e)
