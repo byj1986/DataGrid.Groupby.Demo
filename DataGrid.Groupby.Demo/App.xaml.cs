@@ -7,6 +7,9 @@ namespace DataGrid.Groupby.Demo
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            // TODO: 将下面的占位符替换为你在 https://www.syncfusion.com/products/communitylicense 获取的 License Key
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("YOUR_SYNCFUSION_LICENSE_KEY");
+
             //SetCultureInfo("en-US");
             SetCultureInfo("zh-CN");
             base.OnStartup(e);
