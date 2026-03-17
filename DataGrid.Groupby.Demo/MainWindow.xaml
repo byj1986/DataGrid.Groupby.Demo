@@ -19,6 +19,121 @@
             <Setter Property="HorizontalAlignment" Value="Right" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
+
+        <!--  无动画 Expander（Visibility 即时切换，消除收起/展开卡顿）  -->
+        <Style x:Key="GroupExpanderStyle" TargetType="Expander">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Expander">
+                        <DockPanel>
+                            <ToggleButton
+                                DockPanel.Dock="Top"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Content="{TemplateBinding Header}"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Left"
+                                IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                Padding="{TemplateBinding Padding}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="Transparent" Padding="{TemplateBinding Padding}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path
+                                                    x:Name="Arrow"
+                                                    Width="7"
+                                                    Height="7"
+                                                    Margin="0,0,6,0"
+                                                    VerticalAlignment="Center"
+                                                    Data="M 0,0 L 6,3.5 L 0,7 Z"
+                                                    Fill="#6B7280" />
+                                                <ContentPresenter VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="Arrow" Property="Data" Value="M 0,0 L 6,0 L 3,6 Z" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter
+                                x:Name="ExpandSite"
+                                DockPanel.Dock="Bottom"
+                                Focusable="False"
+                                Visibility="Collapsed" />
+                        </DockPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsExpanded" Value="True">
+                                <Setter TargetName="ExpandSite" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  Producer 一级分组头  -->
+        <Style x:Key="ProducerGroupItemStyle" TargetType="GroupItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GroupItem">
+                        <Expander
+                            IsExpanded="True"
+                            Padding="6,5"
+                            Style="{StaticResource GroupExpanderStyle}">
+                            <Expander.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        FontSize="13"
+                                        FontWeight="Bold"
+                                        Foreground="#1E3A5F"
+                                        Text="{Binding Name}" />
+                                    <TextBlock
+                                        Margin="8,0,0,0"
+                                        FontSize="12"
+                                        Foreground="#5F6B7A">
+                                        <Run Text="(" /><Run Text="{Binding ItemCount, Mode=OneWay}" /><Run Text=" 款)" />
+                                    </TextBlock>
+                                </StackPanel>
+                            </Expander.Header>
+                            <ItemsPresenter />
+                        </Expander>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  CarClass 二级分组头  -->
+        <Style x:Key="CarClassGroupItemStyle" TargetType="GroupItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GroupItem">
+                        <Expander
+                            IsExpanded="True"
+                            Padding="6,4"
+                            Style="{StaticResource GroupExpanderStyle}">
+                            <Expander.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        FontSize="12"
+                                        Foreground="#3A6EA5"
+                                        Text="{Binding Name}" />
+                                    <TextBlock
+                                        Margin="6,0,0,0"
+                                        FontSize="12"
+                                        Foreground="#8A97A4">
+                                        <Run Text="(" /><Run Text="{Binding ItemCount, Mode=OneWay}" /><Run Text=" 款)" />
+                                    </TextBlock>
+                                </StackPanel>
+                            </Expander.Header>
+                            <ItemsPresenter />
+                        </Expander>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <Grid Margin="16">
@@ -62,13 +177,18 @@
                 EnableColumnVirtualization="True"
                 EnableRowVirtualization="True"
                 IsReadOnly="True"
-                ItemsSource="{Binding Cars}"
+                ItemsSource="{Binding CarsView}"
                 MouseDoubleClick="GridControl_MouseDoubleClick"
                 RowHeight="32"
                 VirtualizingPanel.IsVirtualizing="True"
                 VirtualizingPanel.IsVirtualizingWhenGrouping="True"
                 VirtualizingPanel.ScrollUnit="Pixel"
                 VirtualizingPanel.VirtualizationMode="Recycling">
+
+                <DataGrid.GroupStyle>
+                    <GroupStyle ContainerStyle="{StaticResource ProducerGroupItemStyle}" />
+                    <GroupStyle ContainerStyle="{StaticResource CarClassGroupItemStyle}" />
+                </DataGrid.GroupStyle>
 
                 <DataGrid.Columns>
                     <DataGridTextColumn

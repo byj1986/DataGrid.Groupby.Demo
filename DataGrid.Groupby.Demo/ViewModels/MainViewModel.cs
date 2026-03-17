@@ -1,9 +1,9 @@
 using DataGrid.Groupby.Demo.Models;
-using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
-using System.ComponentModel;
+using System.Windows.Data;
 
 namespace DataGrid.Groupby.Demo.ViewModels;
 
@@ -14,13 +14,14 @@ public sealed class MainViewModel : INotifyPropertyChanged
         PropertyNameCaseInsensitive = true
     };
 
-    private ObservableCollection<Car> _cars = [];
+    private List<Car> _cars = [];
+    private ICollectionView? _carsView;
     private bool _isLoading;
     private string _statusText = "准备加载车辆数据...";
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public ObservableCollection<Car> Cars => _cars;
+    public ICollectionView? CarsView => _carsView;
 
     public bool IsLoading
     {
@@ -73,15 +74,22 @@ public sealed class MainViewModel : INotifyPropertyChanged
                 return items ?? [];
             });
 
-            _cars = new ObservableCollection<Car>(cars);
-            OnPropertyChanged(nameof(Cars));
+            _cars = cars;
+
+            var view = new ListCollectionView(_cars);
+            view.GroupDescriptions.Add(new PropertyGroupDescription(nameof(Car.Producer)));
+            view.GroupDescriptions.Add(new PropertyGroupDescription(nameof(Car.CarClass)));
+            _carsView = view;
+
+            OnPropertyChanged(nameof(CarsView));
             OnPropertyChanged(nameof(TotalCount));
             StatusText = $"已加载 {TotalCount:N0} 条车辆数据，按厂商和车型分组显示。";
         }
         catch (Exception ex)
         {
             _cars = [];
-            OnPropertyChanged(nameof(Cars));
+            _carsView = null;
+            OnPropertyChanged(nameof(CarsView));
             OnPropertyChanged(nameof(TotalCount));
             StatusText = $"加载失败：{ex.Message}";
         }
