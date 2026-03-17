@@ -1,6 +1,9 @@
+using DataGrid.Groupby.Demo.Models;
 using DataGrid.Groupby.Demo.ViewModels;
+using System.ComponentModel;
 using System.IO;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -24,11 +27,21 @@ public partial class MainWindow : Window
         var jsonPath = Path.Combine(AppContext.BaseDirectory, "cars.json");
         await _viewModel.LoadAsync(jsonPath);
 
-        // Cars 已设置到 ItemsSource，等待 DataBind + Render 全部完成后（ContextIdle=3 最低）再操作
+        // Wait for data binding to apply ItemsSource, then configure grouping and sorting
         await Dispatcher.InvokeAsync(() =>
         {
-            CarDataGrid.CollapseAllGroup();
-        }, DispatcherPriority.ContextIdle);
+            var view = CollectionViewSource.GetDefaultView(CarDataGrid.ItemsSource);
+            if (view == null) return;
+
+            using (view.DeferRefresh())
+            {
+                view.GroupDescriptions.Add(new PropertyGroupDescription(nameof(Car.Producer)));
+                view.GroupDescriptions.Add(new PropertyGroupDescription(nameof(Car.CarClass)));
+                view.SortDescriptions.Add(new SortDescription(nameof(Car.Producer), ListSortDirection.Ascending));
+                view.SortDescriptions.Add(new SortDescription(nameof(Car.CarClass), ListSortDirection.Ascending));
+                view.SortDescriptions.Add(new SortDescription(nameof(Car.Model),    ListSortDirection.Ascending));
+            }
+        }, DispatcherPriority.DataBind);
     }
 
     private void GridControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
