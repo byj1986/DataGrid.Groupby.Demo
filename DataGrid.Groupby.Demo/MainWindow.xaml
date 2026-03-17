@@ -12,6 +12,13 @@
     mc:Ignorable="d">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <Style x:Key="MiddleAlignCellStyle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="RightAlignCellStyle" TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
     </Window.Resources>
 
     <Grid Margin="16">
@@ -57,77 +64,62 @@
                 IsReadOnly="True"
                 ItemsSource="{Binding Cars}"
                 MouseDoubleClick="GridControl_MouseDoubleClick"
+                RowHeight="32"
                 VirtualizingPanel.IsVirtualizing="True"
                 VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                VirtualizingPanel.ScrollUnit="Pixel"
                 VirtualizingPanel.VirtualizationMode="Recycling">
 
                 <DataGrid.Columns>
                     <DataGridTextColumn
                         Width="150"
                         Binding="{Binding Producer}"
+                        ElementStyle="{StaticResource MiddleAlignCellStyle}"
                         Header="Producer" />
                     <DataGridTextColumn
                         Width="100"
                         Binding="{Binding CarClass}"
+                        ElementStyle="{StaticResource MiddleAlignCellStyle}"
                         Header="Class" />
                     <DataGridTextColumn
                         Width="180"
                         Binding="{Binding Model}"
+                        ElementStyle="{StaticResource MiddleAlignCellStyle}"
                         Header="Model" />
                     <DataGridTextColumn
                         Width="120"
                         Binding="{Binding EnergyType}"
+                        ElementStyle="{StaticResource MiddleAlignCellStyle}"
                         Header="EnergyType" />
                     <DataGridTextColumn
                         Width="150"
                         Binding="{Binding LaunchDate, StringFormat=d}"
+                        ElementStyle="{StaticResource MiddleAlignCellStyle}"
                         Header="LaunchDate" />
                     <DataGridTextColumn
                         Width="120"
                         Binding="{Binding BasePrice, StringFormat=C2}"
-                        Header="BasePrice">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="HorizontalAlignment" Value="Right" />
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
+                        ElementStyle="{StaticResource RightAlignCellStyle}"
+                        Header="BasePrice" />
                     <DataGridTextColumn
                         Width="120"
                         Binding="{Binding Insurance, StringFormat=C2}"
-                        Header="Insurance">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="HorizontalAlignment" Value="Right" />
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
+                        ElementStyle="{StaticResource RightAlignCellStyle}"
+                        Header="Insurance" />
                     <DataGridTextColumn
                         Width="120"
                         Binding="{Binding Tax, StringFormat=C2}"
-                        Header="Tax">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="HorizontalAlignment" Value="Right" />
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
+                        ElementStyle="{StaticResource RightAlignCellStyle}"
+                        Header="Tax" />
                     <DataGridTextColumn
                         Width="140"
                         Binding="{Binding TotalPrice, StringFormat=C2}"
-                        Header="TotalPrice">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="HorizontalAlignment" Value="Right" />
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
+                        ElementStyle="{StaticResource RightAlignCellStyle}"
+                        Header="TotalPrice" />
                 </DataGrid.Columns>
             </DataGrid>
 
-            <Grid
-                Background="#80FFFFFF"
-                Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid Background="#80FFFFFF" Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ProgressBar
                     Width="180"
                     Height="12"
