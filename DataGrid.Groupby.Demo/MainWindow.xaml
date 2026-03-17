@@ -15,6 +15,9 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:GroupValueLabelConverter x:Key="GroupValueLabelConverter" />
+        <DataTemplate x:Key="CurrencyDataTemplate">
+            <TextBlock HorizontalAlignment="Right" Text="{Binding Value, StringFormat={}{0:C2}}" />
+        </DataTemplate>
     </Window.Resources>
 
     <Grid Margin="16">
@@ -48,25 +51,29 @@
         </Border>
 
         <dxg:GridControl
+            x:Name="CarGridControl"
             Grid.Row="2"
+            AutoExpandAllGroups="True"
+            AutoGenerateColumns="None"
+            EnableSmartColumnsGeneration="False"
             ItemsSource="{Binding Cars}"
-            PreviewMouseLeftButtonDown="GridControl_PreviewMouseLeftButtonDown"
-            PreviewMouseRightButtonDown="GridControl_PreviewMouseRightButtonDown">
+            MouseDoubleClick="GridControl_MouseDoubleClick"
+            ShowLoadingPanel="True">
             <dxg:GridControl.GroupSummary>
                 <dxg:GridSummaryItem
-                    DisplayFormat="{}{0:N2}"
+                    DisplayFormat="{}{0:C2}"
                     FieldName="BasePrice"
                     SummaryType="Sum" />
                 <dxg:GridSummaryItem
-                    DisplayFormat="{}{0:N2}"
+                    DisplayFormat="{}{0:C2}"
                     FieldName="Insurance"
                     SummaryType="Sum" />
                 <dxg:GridSummaryItem
-                    DisplayFormat="{}{0:N2}"
+                    DisplayFormat="{}{0:C2}"
                     FieldName="Tax"
                     SummaryType="Sum" />
                 <dxg:GridSummaryItem
-                    DisplayFormat="{}{0:N2}"
+                    DisplayFormat="{}{0:C2}"
                     FieldName="TotalPrice"
                     SummaryType="Sum" />
             </dxg:GridControl.GroupSummary>
@@ -74,26 +81,28 @@
                 <dxg:GridColumn
                     Width="150"
                     FieldName="Producer"
+                    Fixed="Left"
                     GroupIndex="0"
                     Header="Producer"
                     SortIndex="0"
                     SortOrder="Ascending">
                     <dxg:GridColumn.GroupValueTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Value, Converter={StaticResource GroupValueLabelConverter}}" />
+                            <TextBlock Text="{Binding Value}" />
                         </DataTemplate>
                     </dxg:GridColumn.GroupValueTemplate>
                 </dxg:GridColumn>
                 <dxg:GridColumn
                     Width="100"
                     FieldName="CarClass"
+                    Fixed="Left"
                     GroupIndex="1"
                     Header="Class"
                     SortIndex="1"
                     SortOrder="Ascending">
                     <dxg:GridColumn.GroupValueTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Value, Converter={StaticResource GroupValueLabelConverter}}" />
+                            <TextBlock Text="{Binding Value}" />
                         </DataTemplate>
                     </dxg:GridColumn.GroupValueTemplate>
                 </dxg:GridColumn>
@@ -104,49 +113,34 @@
                     SortIndex="2"
                     SortOrder="Ascending" />
                 <dxg:GridColumn
-                    Width="100"
+                    Width="120"
                     FieldName="EnergyType"
                     Header="EnergyType" />
                 <dxg:GridColumn
-                    Width="120"
+                    Width="150"
                     FieldName="LaunchDate"
-                    Header="LaunchDate">
-                    <dxg:GridColumn.DisplayMemberBinding>
-                        <Binding Path="LaunchDate" StringFormat="yyyy-MM-dd" />
-                    </dxg:GridColumn.DisplayMemberBinding>
-                </dxg:GridColumn>
+                    Header="LaunchDate"
+                    RoundDateDisplayFormat="d" />
                 <dxg:GridColumn
                     Width="120"
+                    CellTemplate="{StaticResource CurrencyDataTemplate}"
                     FieldName="BasePrice"
-                    Header="BasePrice">
-                    <dxg:GridColumn.DisplayMemberBinding>
-                        <Binding Path="BasePrice" StringFormat="N2" />
-                    </dxg:GridColumn.DisplayMemberBinding>
-                </dxg:GridColumn>
+                    Header="BasePrice" />
                 <dxg:GridColumn
                     Width="120"
+                    CellTemplate="{StaticResource CurrencyDataTemplate}"
                     FieldName="Insurance"
-                    Header="Insurance">
-                    <dxg:GridColumn.DisplayMemberBinding>
-                        <Binding Path="Insurance" StringFormat="N2" />
-                    </dxg:GridColumn.DisplayMemberBinding>
-                </dxg:GridColumn>
+                    Header="Insurance" />
                 <dxg:GridColumn
                     Width="120"
+                    CellTemplate="{StaticResource CurrencyDataTemplate}"
                     FieldName="Tax"
-                    Header="Tax">
-                    <dxg:GridColumn.DisplayMemberBinding>
-                        <Binding Path="Tax" StringFormat="N2" />
-                    </dxg:GridColumn.DisplayMemberBinding>
-                </dxg:GridColumn>
+                    Header="Tax" />
                 <dxg:GridColumn
                     Width="140"
+                    CellTemplate="{StaticResource CurrencyDataTemplate}"
                     FieldName="TotalPrice"
-                    Header="TotalPrice">
-                    <dxg:GridColumn.DisplayMemberBinding>
-                        <Binding Path="TotalPrice" StringFormat="N2" />
-                    </dxg:GridColumn.DisplayMemberBinding>
-                </dxg:GridColumn>
+                    Header="TotalPrice" />
             </dxg:GridControl.Columns>
             <dxg:GridControl.View>
                 <dxg:TableView
@@ -155,14 +149,16 @@
                     AllowEditing="False"
                     AllowFixedColumnMenu="False"
                     AllowGrouping="False"
+                    AllowHorizontalScrollingVirtualization="True"
                     AllowSorting="False"
                     AutoWidth="False"
-                    ContextMenu="{x:Null}"
                     GroupSummaryDisplayMode="AlignByColumns"
+                    ShowFilterPanelMode="Never"
                     ShowGridMenu="TableView_ShowGridMenu"
                     ShowGroupPanel="False"
                     ShowGroupedColumns="True"
-                    ShowIndicator="False" />
+                    ShowIndicator="False"
+                    UseLightweightTemplates="All" />
             </dxg:GridControl.View>
         </dxg:GridControl>
 

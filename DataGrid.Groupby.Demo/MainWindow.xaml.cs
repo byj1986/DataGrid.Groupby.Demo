@@ -1,9 +1,8 @@
 using DataGrid.Groupby.Demo.ViewModels;
-using DevExpress.Xpf.Grid;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace DataGrid.Groupby.Demo;
 
@@ -27,14 +26,13 @@ public partial class MainWindow : Window
 
         var jsonPath = Path.Combine(AppContext.BaseDirectory, "cars.json");
         await _viewModel.LoadAsync(jsonPath);
-    }
 
-    private void GridControl_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-    {
-        if (IsColumnHeaderElement(e.OriginalSource))
+        // Cars 已设置到 ItemsSource，等待 DataBind(8) + Render(7) 全部完成后（ContextIdle=3 最低）再操作
+        await Dispatcher.InvokeAsync(() =>
         {
-            e.Handled = true;
-        }
+            CarGridControl.ShowLoadingPanel = false;
+            CarGridControl.CollapseAllGroups();
+        }, DispatcherPriority.ContextIdle);
     }
 
     private void GridControl_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -43,25 +41,13 @@ public partial class MainWindow : Window
         e.Handled = true;
     }
 
-    private void TableView_ShowGridMenu(object sender, GridMenuEventArgs e)
+    private void TableView_ShowGridMenu(object sender, DevExpress.Xpf.Grid.GridMenuEventArgs e)
     {
         // DevExpress popup menus (header/row/group) are not WPF ContextMenu; disable at source.
         e.Handled = true;
     }
 
-    private static bool IsColumnHeaderElement(object? source)
+    private void GridControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
-        var current = source as DependencyObject;
-        while (current is not null)
-        {
-            if (current.GetType().Name.Contains("ColumnHeader", StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-
-            current = VisualTreeHelper.GetParent(current);
-        }
-
-        return false;
     }
 }
