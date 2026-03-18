@@ -1,0 +1,23 @@
+root = true
+
+# 所有文件的基本设置
+[*]
+charset = utf-8
+end_of_line = crlf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# XML 文件使用 2 个空格缩进
+[*.{xml,config,csproj,props}]
+indent_style = space
+indent_size = 2
+
+# C# 文件使用 4 个空格缩进（.NET 标准）
+[*.{cs,xaml}]
+indent_style = space
+indent_size = 4
+
+# JSON 文件使用 2 个空格缩进
+[*.json]
+indent_style = space
+indent_size = 2

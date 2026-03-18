@@ -9,6 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Converters\ColumnVisibilityConverter.cs" />
+    <Compile Remove="Converters\HeaderVisibilityConverter.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="cars.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

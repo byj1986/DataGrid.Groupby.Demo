@@ -1,27 +1,33 @@
+using DataGrid.Groupby.Demo.Attributes;
+using DataGrid.Groupby.Demo.Command;
 using DataGrid.Groupby.Demo.Models;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Windows.Data;
+using System.Windows.Input;
 
 namespace DataGrid.Groupby.Demo.ViewModels;
 
-public sealed class MainViewModel : INotifyPropertyChanged
+public class MainViewModel : INotifyPropertyChanged
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
+    private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions()
     {
         PropertyNameCaseInsensitive = true
     };
 
-    private List<Car> _cars = [];
     private ICollectionView? _carsView;
+    public ICollectionView? CarsView => _carsView;
+
+    private List<Car> _cars = [];
     private bool _isLoading;
     private string _statusText = "准备加载车辆数据...";
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    public ICollectionView? CarsView => _carsView;
+    /// <summary>
+    /// 列可见性管理器
+    /// </summary>
+    public ColumnVisibilityManager<Car> ColumnManager { get; }
 
     public bool IsLoading
     {
@@ -54,6 +60,40 @@ public sealed class MainViewModel : INotifyPropertyChanged
     }
 
     public int TotalCount => _cars.Count;
+
+    public MainViewModel()
+    {
+        ColumnManager = new ColumnVisibilityManager<Car> { CurrentScenario = "View" };
+        ResetVisibilityCommand = new RelayCommand(() => ColumnManager.ResetToDefault());
+        HideColumnCommand = new RelayCommand(() => ColumnManager.SetColumnVisibility("Insurance", System.Windows.Visibility.Collapsed));
+    }
+
+    /// <summary>
+    /// 场景切换命令（绑定到RadioButton）
+    /// </summary>
+    public ICommand ChangeScenarioCommand => new RelayCommand<string>(scenario =>
+    {
+        ColumnManager.CurrentScenario = scenario;
+    });
+
+    /// <summary>
+    /// 恢复默认可见性命令
+    /// </summary>
+    public ICommand HideColumnCommand { get; }
+
+    /// <summary>
+    /// 恢复默认可见性命令
+    /// </summary>
+    public ICommand ResetVisibilityCommand { get; }
+
+    #region INotifyPropertyChanged
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+    #endregion
 
     public async Task LoadAsync(string jsonPath)
     {
@@ -99,8 +139,4 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
     }
 
-    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
 }
