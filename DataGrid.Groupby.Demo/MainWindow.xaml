@@ -15,6 +15,7 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <local:CheckedConverter x:Key="CheckedConverter" />
+        <local:VisibilityToBoolConverter x:Key="VisibilityToBoolConverter" />
         <!--  无动画 Expander（Visibility 即时切换，消除收起/展开卡顿）  -->
         <Style x:Key="GroupExpanderStyle" TargetType="Expander">
             <Setter Property="Template">
@@ -96,6 +97,61 @@
                             </Expander.Header>
                             <ItemsPresenter />
                         </Expander>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  列可见性切换 MenuItem 公共样式  -->
+        <Style x:Key="ColumnMenuItemStyle" TargetType="MenuItem">
+            <Setter Property="StaysOpenOnClick" Value="True" />
+            <Setter Property="Command" Value="{Binding ToggleColumnVisibilityCommand}" />
+            <Setter Property="CommandParameter" Value="Model" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox
+                                VerticalAlignment="Center"
+                                IsChecked="{Binding Visibility, Source={x:Reference ColModel}, Converter={StaticResource VisibilityToBoolConverter}, Mode=TwoWay}"
+                                IsHitTestVisible="False" />
+                            <TextBlock
+                                Margin="6,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="Model" />
+
+                        </StackPanel>
+                        <!--<Grid></Grid>-->
+                        <!--<StackPanel Orientation="Horizontal">
+                            <CheckBox
+                                VerticalAlignment="Center"
+                                IsChecked="{Binding Visibility, Source={x:Reference ColModel}, Converter={StaticResource VisibilityToBoolConverter}, Mode=TwoWay}"
+                                IsHitTestVisible="False" />
+                            <TextBlock
+                                Margin="6,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="Model" />
+                        </StackPanel>-->
+                        <!--<Grid Height="24" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0" />
+                                <ColumnDefinition Width="*" MinWidth="80" />
+                            </Grid.ColumnDefinitions>
+                            <Border x:Name="_border" Grid.ColumnSpan="2" />
+                            <TextBlock
+                                x:Name="_txt"
+                                Grid.Column="1"
+                                Margin="10,0,15,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding Header, RelativeSource={RelativeSource TemplatedParent}}" />
+                            <Popup
+                                x:Name="SubMenuPopup"
+                                MaxHeight="300"
+                                AllowsTransparency="True"
+                                Focusable="False"
+                                IsOpen="{TemplateBinding IsSubmenuOpen}"
+                                Placement="Right" />
+                        </Grid>-->
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -197,49 +253,191 @@
                     <GroupStyle ContainerStyle="{StaticResource CarClassGroupItemStyle}" />
                 </DataGrid.GroupStyle>
 
+                <DataGrid.ContextMenu>
+                    <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                        <MenuItem
+                            CommandParameter="Producer"
+                            Header="Producer"
+                            Style="{StaticResource ColumnMenuItemStyle}">
+                            <!--<MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox
+                                        VerticalAlignment="Center"
+                                        IsChecked="{Binding Visibility, Source={x:Reference ColProducer}, Converter={StaticResource VisibilityToBoolConverter}, Mode=TwoWay}"
+                                        IsHitTestVisible="False" />
+                                    <TextBlock
+                                        Margin="6,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="Producer" />
+                                </StackPanel>
+                            </MenuItem.Header>-->
+                        </MenuItem>
+                        <MenuItem CommandParameter="CarClass" Style="{StaticResource ColumnMenuItemStyle}">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox
+                                        VerticalAlignment="Center"
+                                        IsChecked="{Binding Visibility, Source={x:Reference ColClass}, Converter={StaticResource VisibilityToBoolConverter}, Mode=TwoWay}"
+                                        IsHitTestVisible="False" />
+                                    <TextBlock
+                                        Margin="6,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="Class" />
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem CommandParameter="Model" Style="{StaticResource ColumnMenuItemStyle}">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox
+                                        VerticalAlignment="Center"
+                                        IsChecked="{Binding Visibility, Source={x:Reference ColModel}, Converter={StaticResource VisibilityToBoolConverter}, Mode=TwoWay}"
+                                        IsHitTestVisible="False" />
+                                    <TextBlock
+                                        Margin="6,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="Model" />
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem CommandParameter="EnergyType" Style="{StaticResource ColumnMenuItemStyle}">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox
+                                        VerticalAlignment="Center"
+                                        IsChecked="{Binding Visibility, Source={x:Reference ColEnergyType}, Converter={StaticResource VisibilityToBoolConverter}, Mode=TwoWay}"
+                                        IsHitTestVisible="False" />
+                                    <TextBlock
+                                        Margin="6,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="EnergyType" />
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem CommandParameter="LaunchDate" Style="{StaticResource ColumnMenuItemStyle}">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox
+                                        VerticalAlignment="Center"
+                                        IsChecked="{Binding Visibility, Source={x:Reference ColLaunchDate}, Converter={StaticResource VisibilityToBoolConverter}, Mode=TwoWay}"
+                                        IsHitTestVisible="False" />
+                                    <TextBlock
+                                        Margin="6,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="LaunchDate" />
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem CommandParameter="BasePrice" Style="{StaticResource ColumnMenuItemStyle}">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox
+                                        VerticalAlignment="Center"
+                                        IsChecked="{Binding Visibility, Source={x:Reference ColBasePrice}, Converter={StaticResource VisibilityToBoolConverter}, Mode=TwoWay}"
+                                        IsHitTestVisible="False" />
+                                    <TextBlock
+                                        Margin="6,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="BasePrice" />
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem CommandParameter="Insurance" Style="{StaticResource ColumnMenuItemStyle}">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox
+                                        VerticalAlignment="Center"
+                                        IsChecked="{Binding Visibility, Source={x:Reference ColInsurance}, Converter={StaticResource VisibilityToBoolConverter}, Mode=TwoWay}"
+                                        IsHitTestVisible="False" />
+                                    <TextBlock
+                                        Margin="6,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="Insurance" />
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem CommandParameter="Tax" Style="{StaticResource ColumnMenuItemStyle}">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox
+                                        VerticalAlignment="Center"
+                                        IsChecked="{Binding Visibility, Source={x:Reference ColTax}, Converter={StaticResource VisibilityToBoolConverter}, Mode=TwoWay}"
+                                        IsHitTestVisible="False" />
+                                    <TextBlock
+                                        Margin="6,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="Tax" />
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem CommandParameter="TotalPrice" Style="{StaticResource ColumnMenuItemStyle}">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox
+                                        VerticalAlignment="Center"
+                                        IsChecked="{Binding Visibility, Source={x:Reference ColTotalPrice}, Converter={StaticResource VisibilityToBoolConverter}, Mode=TwoWay}"
+                                        IsHitTestVisible="False" />
+                                    <TextBlock
+                                        Margin="6,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="TotalPrice" />
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+
                 <DataGrid.Columns>
                     <DataGridTextColumn
+                        x:Name="ColProducer"
                         Width="150"
                         Binding="{Binding Producer}"
                         ElementStyle="{StaticResource MiddleAlignCellStyle}"
                         Header="Producer" />
                     <DataGridTextColumn
+                        x:Name="ColClass"
                         Width="100"
                         Binding="{Binding CarClass}"
                         ElementStyle="{StaticResource MiddleAlignCellStyle}"
                         Header="Class" />
                     <DataGridTextColumn
+                        x:Name="ColModel"
                         Width="180"
                         Binding="{Binding Model}"
                         ElementStyle="{StaticResource MiddleAlignCellStyle}"
                         Header="Model" />
                     <DataGridTextColumn
+                        x:Name="ColEnergyType"
                         Width="120"
                         Binding="{Binding EnergyType}"
                         ElementStyle="{StaticResource MiddleAlignCellStyle}"
                         Header="EnergyType" />
                     <DataGridTextColumn
+                        x:Name="ColLaunchDate"
                         Width="150"
                         Binding="{Binding LaunchDate, StringFormat=d}"
                         ElementStyle="{StaticResource MiddleAlignCellStyle}"
                         Header="LaunchDate" />
                     <DataGridTextColumn
+                        x:Name="ColBasePrice"
                         Width="120"
                         Binding="{Binding BasePrice, StringFormat=C2}"
                         ElementStyle="{StaticResource RightAlignCellStyle}"
                         Header="BasePrice" />
                     <DataGridTextColumn
+                        x:Name="ColInsurance"
                         Width="120"
                         Binding="{Binding Insurance, StringFormat=C2}"
                         ElementStyle="{StaticResource RightAlignCellStyle}"
                         Header="Insurance" />
-                    <!--  Visibility="{Binding Path=Data.ColumnManager[Insurance], Source={StaticResource ViewModelProxy}}"  -->
                     <DataGridTextColumn
+                        x:Name="ColTax"
                         Width="120"
                         Binding="{Binding Tax, StringFormat=C2}"
                         ElementStyle="{StaticResource RightAlignCellStyle}"
                         Header="Tax" />
                     <DataGridTextColumn
+                        x:Name="ColTotalPrice"
                         Width="140"
                         Binding="{Binding TotalPrice, StringFormat=C2}"
                         ElementStyle="{StaticResource RightAlignCellStyle}"

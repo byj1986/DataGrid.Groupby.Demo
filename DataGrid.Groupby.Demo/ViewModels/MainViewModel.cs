@@ -66,6 +66,10 @@ public class MainViewModel : INotifyPropertyChanged
         ColumnManager = new ColumnVisibilityManager<Car> { CurrentScenario = "View" };
         ResetVisibilityCommand = new RelayCommand(() => ColumnManager.ResetToDefault());
         HideColumnCommand = new RelayCommand(() => ColumnManager.SetColumnVisibility("Insurance", System.Windows.Visibility.Collapsed));
+        ToggleColumnVisibilityCommand = new RelayCommand<string>(headerName =>
+        {
+            ColumnManager.ToggleColumnVisibility(headerName);
+        });
     }
 
     /// <summary>
@@ -77,7 +81,7 @@ public class MainViewModel : INotifyPropertyChanged
     });
 
     /// <summary>
-    /// 恢复默认可见性命令
+    /// 隐藏 Insurance 列命令
     /// </summary>
     public ICommand HideColumnCommand { get; }
 
@@ -85,6 +89,11 @@ public class MainViewModel : INotifyPropertyChanged
     /// 恢复默认可见性命令
     /// </summary>
     public ICommand ResetVisibilityCommand { get; }
+
+    /// <summary>
+    /// 切换指定列可见性命令，CommandParameter 传列 Header 字符串
+    /// </summary>
+    public ICommand ToggleColumnVisibilityCommand { get; }
 
     #region INotifyPropertyChanged
 

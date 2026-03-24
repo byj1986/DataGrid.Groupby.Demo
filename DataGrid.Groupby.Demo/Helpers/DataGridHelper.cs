@@ -11,9 +11,16 @@ namespace DataGrid.Groupby.Demo.Helpers
 
             foreach (var column in dataGrid.Columns)
             {
-                if (column.Header is string headerName)
+                if (column is DataGridTextColumn textColumn
+                    && textColumn.Binding is Binding binding)
                 {
-                    BindingOperations.SetBinding(column, DataGridColumn.VisibilityProperty, new Binding($"ColumnManager[{headerName}]") { Source = dataContext });
+                    string? path = binding.Path?.Path;
+                    string? bindingKey = string.IsNullOrEmpty(path) ? column.Header as string : path;
+                    if (string.IsNullOrEmpty(bindingKey))
+                    {
+                        continue;
+                    }
+                    BindingOperations.SetBinding(column, DataGridColumn.VisibilityProperty, new Binding($"ColumnManager[{bindingKey}]") { Source = dataContext });
                 }
             }
         }

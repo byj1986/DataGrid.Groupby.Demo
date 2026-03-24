@@ -117,6 +117,14 @@ namespace DataGrid.Groupby.Demo.Attributes
             }
         }
 
+        public void ToggleColumnVisibility(string columnName)
+        {
+            if (_currentVisibilities.TryGetValue(columnName, out var current))
+            {
+                SetColumnVisibility(columnName, current == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible);
+            }
+        }
+
         /// <summary>
         /// 恢复默认可见性
         /// </summary>
