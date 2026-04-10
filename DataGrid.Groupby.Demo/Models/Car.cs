@@ -14,7 +14,7 @@ public sealed class Car
 
     public string Usage { get; set; } = string.Empty;
 
-    public string Model { get; set; } = string.Empty;
+    public string VIN { get; set; } = string.Empty;
 
     public string EnergyType { get; set; } = string.Empty;
 

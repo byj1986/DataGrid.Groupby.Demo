@@ -126,8 +126,11 @@ public class MainViewModel : INotifyPropertyChanged
             _cars = cars;
 
             var view = new ListCollectionView(_cars);
-            view.GroupDescriptions.Add(new PropertyGroupDescription(nameof(Car.Producer)));
-            view.GroupDescriptions.Add(new PropertyGroupDescription(nameof(Car.CarClass)));
+            view.SortDescriptions.Clear();
+            view.SortDescriptions.Add(new SortDescription(nameof(Car.CarClass), ListSortDirection.Ascending));
+            view.SortDescriptions.Add(new SortDescription(nameof(Car.EnergyType), ListSortDirection.Ascending));
+            //view.GroupDescriptions.Add(new PropertyGroupDescription(nameof(Car.Producer)));
+            //view.GroupDescriptions.Add(new PropertyGroupDescription(nameof(Car.CarClass)));
             _carsView = view;
 
             OnPropertyChanged(nameof(CarsView));

@@ -21,7 +21,7 @@ public partial class MainWindow : Window
     {
         Loaded -= MainWindow_Loaded;
 
-        var jsonPath = Path.Combine(AppContext.BaseDirectory, "cars.json");
+        var jsonPath = Path.Combine(AppContext.BaseDirectory, "cars.merged.json");
         await _viewModel.LoadAsync(jsonPath);
         this.CarDataGrid.BindingColumnsVisibility(DataContext);
     }

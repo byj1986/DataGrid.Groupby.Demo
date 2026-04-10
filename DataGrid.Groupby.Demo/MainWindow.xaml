@@ -17,6 +17,7 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <local:CheckedConverter x:Key="CheckedConverter" />
         <local:VisibilityToBoolConverter x:Key="VisibilityToBoolConverter" />
+        <local:ColumnCheckedConverter x:Key="ColumnCheckedConverter"/>
         <!--  无动画 Expander（Visibility 即时切换，消除收起/展开卡顿）  -->
         <Style x:Key="GroupExpanderStyle" TargetType="Expander">
             <Setter Property="Template">
@@ -103,30 +104,6 @@
             </Setter>
         </Style>
 
-        <!--  列可见性切换 MenuItem 公共样式  -->
-        <Style x:Key="ColumnMenuItemStyle" TargetType="MenuItem">
-            <Setter Property="StaysOpenOnClick" Value="True" />
-            <Setter Property="Command" Value="{Binding ToggleColumnVisibilityCommand}" />
-            <Setter Property="CommandParameter" Value="{Binding Header, RelativeSource={RelativeSource Self}}" />
-            <Setter Property="helpers:ColumnMenuItemHelper.AutoBindChecked" Value="True" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="MenuItem">
-                        <StackPanel Orientation="Horizontal">
-                            <CheckBox
-                                VerticalAlignment="Center"
-                                IsChecked="{TemplateBinding IsChecked}"
-                                IsHitTestVisible="False" />
-                            <TextBlock
-                                Margin="6,0,0,0"
-                                VerticalAlignment="Center"
-                                Text="{TemplateBinding Header}" />
-                        </StackPanel>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
         <!--  CarClass 二级分组头  -->
         <Style x:Key="CarClassGroupItemStyle" TargetType="GroupItem">
             <Setter Property="Template">
@@ -157,6 +134,32 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!--  列可见性切换 MenuItem 公共样式  -->
+        <Style x:Key="ColumnMenuItemStyle" TargetType="MenuItem">
+            <Setter Property="StaysOpenOnClick" Value="True" />
+            <Setter Property="Command" Value="{Binding ToggleColumnVisibilityCommand}" />
+            <Setter Property="CommandParameter" Value="{Binding Header, RelativeSource={RelativeSource Self}}" />
+            <!--<Setter Property="IsChecked" Value="{Binding Path=ColumnManager,Converter={StaticResource ColumnCheckedConverter},ConverterParameter={Binding Header, RelativeSource={RelativeSource Self}}}"/>-->
+            <Setter Property="helpers:ColumnMenuItemHelper.AutoBindChecked" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox
+                                VerticalAlignment="Center"
+                                IsChecked="{TemplateBinding IsChecked}"
+                                IsHitTestVisible="False" />
+                            <TextBlock
+                                Margin="6,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{TemplateBinding Header}" />
+                        </StackPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
     </Window.Resources>
 
     <Grid Margin="16">
@@ -184,7 +187,7 @@
                     <TextBlock
                         Margin="0,6,0,0"
                         Foreground="#5F6B7A"
-                        Text="数据来源：cars.json，使用 WPF 内置 DataGrid。" />
+                        Text="数据来源：cars.merged.json，使用 WPF 内置 DataGrid。" />
                 </StackPanel>
             </DockPanel>
         </Border>
@@ -218,17 +221,17 @@
                     </Style>
 
                 </DataGrid.Resources>
-                <DataGrid.GroupStyle>
+                <!--<DataGrid.GroupStyle>
                     <GroupStyle ContainerStyle="{StaticResource ProducerGroupItemStyle}" />
                     <GroupStyle ContainerStyle="{StaticResource CarClassGroupItemStyle}" />
-                </DataGrid.GroupStyle>
+                </DataGrid.GroupStyle>-->
 
                 <DataGrid.ContextMenu>
                     <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                         <MenuItem Header="Producer" Style="{StaticResource ColumnMenuItemStyle}" />
                         <MenuItem Header="CarClass" Style="{StaticResource ColumnMenuItemStyle}" />
-                        <MenuItem Header="Model" Style="{StaticResource ColumnMenuItemStyle}" />
                         <MenuItem Header="EnergyType" Style="{StaticResource ColumnMenuItemStyle}" />
+                        <MenuItem Header="VIN" Style="{StaticResource ColumnMenuItemStyle}" />
                         <MenuItem Header="LaunchDate" Style="{StaticResource ColumnMenuItemStyle}" />
                         <MenuItem Header="BasePrice" Style="{StaticResource ColumnMenuItemStyle}" />
                         <MenuItem Header="Insurance" Style="{StaticResource ColumnMenuItemStyle}" />
@@ -249,15 +252,15 @@
                         ElementStyle="{StaticResource MiddleAlignCellStyle}"
                         Header="Class" />
                     <DataGridTextColumn
-                        Width="180"
-                        Binding="{Binding Model}"
-                        ElementStyle="{StaticResource MiddleAlignCellStyle}"
-                        Header="Model" />
-                    <DataGridTextColumn
                         Width="120"
                         Binding="{Binding EnergyType}"
                         ElementStyle="{StaticResource MiddleAlignCellStyle}"
                         Header="EnergyType" />
+                    <DataGridTextColumn
+                        Width="180"
+                        Binding="{Binding VIN}"
+                        ElementStyle="{StaticResource MiddleAlignCellStyle}"
+                        Header="VIN" />
                     <DataGridTextColumn
                         Width="150"
                         Binding="{Binding LaunchDate, StringFormat=d}"

@@ -1,0 +1,7 @@
+WPF
+    添加一个开始滚动数据按钮
+        按下后根据Car的结构，及cars.json时动态添加数据，每10毫秒添加10000条数据
+    添加一个停止数据滚动按钮，按下后停止添加
+
+    添加一个按钮
+        按钮按下后，获取当前Column的Visibility，输出到控制台Debug.WriteLine($"HeaderName: {HeaderName}, Visibility: {ActualVisiblity}")
